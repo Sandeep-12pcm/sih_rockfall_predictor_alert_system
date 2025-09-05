@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
+    {"offset": {"line": 31, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/abhis/Desktop/SIH_internal/sih_rockfall_predictor_alert_system/frontend/app/%28root%29/page.tsx"],"sourcesContent":["import Link from \"next/link\";\r\n\r\nconst page = () => {\r\n  return (\r\n    <>\r\n      <div>Home Page</div>\r\n      <ul>\r\n\r\n        <li>\r\n          <Link href=\"/dashboard/\" className=\"text-blue-500 hover:underline w-full\">Go to Dashboard page</Link>\r\n        </li>\r\n        <li>\r\n\r\n          <Link href=\"/about\" className=\"text-blue-500 hover:underline w-full\">Go to About page</Link>\r\n        </li>\r\n      </ul>\r\n    </>\r\n  )\r\n}\r\n\r\nexport default page"],"names":[],"mappings":";;;;;AAAA;;;AAEA,MAAM,OAAO;IACX,qBACE;;0BACE,8OAAC;0BAAI;;;;;;0BACL,8OAAC;;kCAEC,8OAAC;kCACC,cAAA,8OAAC,uKAAI;4BAAC,MAAK;4BAAc,WAAU;sCAAuC;;;;;;;;;;;kCAE5E,8OAAC;kCAEC,cAAA,8OAAC,uKAAI;4BAAC,MAAK;4BAAS,WAAU;sCAAuC;;;;;;;;;;;;;;;;;;;AAK/E;uCAEe","debugId":null}}]
+}

@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/abhis/Desktop/SIH_internal/sih_rockfall_predictor_alert_system/frontend/app/%28root%29/layout.tsx"],"sourcesContent":["const layout = ({ children }: { children: React.ReactNode }) => {\r\n    return (\r\n        <>\r\n            <div>\r\n                <h1>Root layout</h1>\r\n            </div>\r\n            <div>\r\n                {children}\r\n            </div>\r\n        </>\r\n    )\r\n}\r\n\r\nexport default layout"],"names":[],"mappings":";;;;;;AAAA,MAAM,SAAS,CAAC,EAAE,QAAQ,EAAiC;IACvD,qBACI;;0BACI,8OAAC;0BACG,cAAA,8OAAC;8BAAG;;;;;;;;;;;0BAER,8OAAC;0BACI;;;;;;;;AAIjB;uCAEe","debugId":null}}]
+}
