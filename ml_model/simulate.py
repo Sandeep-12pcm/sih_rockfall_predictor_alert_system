@@ -37,6 +37,7 @@ while True:
             # print(f"Sent: {reading} -> {r.status_code}")
             r = requests.post(API_URL, json=reading)
             if r.status_code == 200:
+                
                 data = r.json()
                 print(f"Sent: {reading} -> Predicted risk: {data['predicted_risk_class']}")
             else:

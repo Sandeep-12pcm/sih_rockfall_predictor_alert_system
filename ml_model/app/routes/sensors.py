@@ -17,31 +17,35 @@ SENSORS: list[Sensor] = [
 ]
 
 # Store readings in memory (later: DB)
-READINGS: list[SensorReading] = []
+READINGS: list[dict] = []  # 👈 store dicts including predictions
 
 # Load Random Forest model
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "models", "rockfall_rf_model.pkl")
+MODEL_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "..", "models", "rockfall_rf_model.pkl"
+)
 rf_model = joblib.load(MODEL_PATH)
 
 # Sensor order for model input
 MODEL_FEATURE_ORDER = ["D-01", "S-01", "P-01", "T-01", "V-01"]
 
+
 @router.get("/sensors", response_model=list[Sensor])
 def list_sensors():
     return SENSORS
 
+
 @router.post("/ingest", response_model=dict)
 def ingest_reading(reading: SensorReading):
-    # Append new reading
-    READINGS.append(reading)
-
     # Build latest values dict by sensor_id
     latest_values = {}
-    for s in reversed(READINGS):  # iterate from latest
-        if s.id not in latest_values:
-            latest_values[s.id] = s.value
+    for s in reversed(READINGS):  # iterate from latest stored
+        if s["id"] not in latest_values:
+            latest_values[s["id"]] = s["value"]
         if len(latest_values) == len(MODEL_FEATURE_ORDER):
             break  # got all required sensors
+
+    # Add the current one
+    latest_values[reading.id] = reading.value
 
     # Ensure all sensors are present (fill missing with 0)
     X_input = [[latest_values.get(sid, 0) for sid in MODEL_FEATURE_ORDER]]
@@ -49,11 +53,19 @@ def ingest_reading(reading: SensorReading):
     # Predict risk
     predicted_risk = int(rf_model.predict(X_input)[0])
 
+    # Store reading + prediction together
+    reading_with_pred = {
+        **jsonable_encoder(reading),
+        "predicted_risk_class": predicted_risk,
+    }
+    READINGS.append(reading_with_pred)
+
     return {
-        "reading": jsonable_encoder(reading),   # 👈 convert Pydantic model to JSON-safe dict
-        "predicted_risk_class": predicted_risk
+        "reading": reading_with_pred,
+        "predicted_risk_class": predicted_risk,
     }
 
-@router.get("/readings", response_model=list[SensorReading])
+
+@router.get("/readings")
 def get_readings():
     return READINGS
