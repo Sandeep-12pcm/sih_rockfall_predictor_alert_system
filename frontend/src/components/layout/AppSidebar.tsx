@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
-  { title: "Dashboard", url: "/", icon: Home },
+  { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Risk Maps", url: "/risk-maps", icon: MapPin },
   { title: "Alerts", url: "/alerts", icon: AlertTriangle },
   { title: "Data Trends", url: "/trends", icon: TrendingUp },
