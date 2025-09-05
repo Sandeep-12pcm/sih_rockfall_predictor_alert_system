@@ -17,6 +17,7 @@ import { supabase } from "../supabaseClient";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -39,9 +40,13 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
+      // Sign up user in Supabase Auth with metadata
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: { name, role: "Safety Engineer" },
+        },
       });
 
       if (error) {
@@ -50,15 +55,43 @@ const Signup = () => {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        toast({
-          title: "Signup Successful",
-          description:
-            "Your account has been created. Please check your email for verification.",
-        });
-        navigate("/dashboard"); // redirect after signup
+        setIsLoading(false);
+        return;
       }
-    } catch (err: any) {
+
+      // Insert user details into Supabase database
+      if (data.user) {
+        console.log("User metadata:", data.user.user_metadata);
+        const { error: dbError } = await supabase.from("users").insert([
+          { id: data.user.id, name, email, role: "Safety Engineer" },
+        ]);
+        if (dbError) {
+          toast({
+            title: "Database Error",
+            description: dbError.message,
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+      else{
+        toast({
+          title: "Signup Failed",
+          description: "User data not available after signup.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      toast({
+        title: "Signup Successful",
+        description:
+          "Your account has been created. Please check your email for verification.",
+      });
+
+      navigate("/login");
+    } catch (err) {
       toast({
         title: "Unexpected Error",
         description: err.message,
@@ -94,6 +127,24 @@ const Signup = () => {
 
           <form onSubmit={handleSignup}>
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="name"
+                  className="text-foreground font-medium"
+                >
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Your Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-background border-border text-foreground"
+                  required
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label
                   htmlFor="email"
@@ -177,7 +228,7 @@ const Signup = () => {
                 <Button
                   variant="link"
                   className="text-primary hover:text-primary/80 text-sm"
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/login")}
                 >
                   Already have an account? Log In
                 </Button>

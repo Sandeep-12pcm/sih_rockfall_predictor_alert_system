@@ -37,6 +37,7 @@ const Login = () => {
         title: "Login Successful",
         description: `Welcome back, ${data.user?.email}`,
       });
+      localStorage.setItem("supabase_token", data.session.access_token);
       navigate("/dashboard"); // 👈 redirect after login
     }
   } catch (err: any) {
