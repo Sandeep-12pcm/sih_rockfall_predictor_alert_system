@@ -11,6 +11,7 @@ import Alerts from "./pages/Alerts";
 import DataTrends from "./pages/DataTrends";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import Signup from "./pages/Signup";
 
 const queryClient = new QueryClient();
 
@@ -21,8 +22,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/signup" element = {<Signup/>} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={
+          <Route path="/dashboard" element={
             <AppLayout>
               <Dashboard />
             </AppLayout>

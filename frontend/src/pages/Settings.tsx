@@ -18,6 +18,9 @@ import {
   RefreshCw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "../supabaseClient";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const [profile, setProfile] = useState({
@@ -26,6 +29,23 @@ const Settings = () => {
     role: "Safety Engineer", 
     phone: "+1-555-0123"
   });
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchProfile  = async() => {
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError || !sessionData.session) return navigate("/signin", { replace: true });
+
+            const { data: userData, error: userError } = await supabase
+                .from("users")
+                .select("id, name, email, number, role")
+                .eq("id", sessionData.session.user.id)
+                .single();
+
+            if (userError) return navigate("/signin", { replace: true });
+
+            setProfile(userData);
+      fetchProfile();
+  }},[navigate])
 
   const [notifications, setNotifications] = useState({
     emailAlerts: true,
