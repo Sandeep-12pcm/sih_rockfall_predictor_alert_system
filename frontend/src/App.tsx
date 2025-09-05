@@ -12,6 +12,7 @@ import DataTrends from "./pages/DataTrends";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
+import Predictor from "./pages/predictor";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/signup" element = {<Signup/>} />
+          <Route path="/" element={<Predictor />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={
             <AppLayout>
