@@ -22,6 +22,7 @@ export const useSensorReadings = () => {
         const res = await fetch("http://127.0.0.1:8000/sensors/readings");
         const data = await res.json();
         setReadings(data);
+        console.log("Fetched sensor data:", data);
         setError(null);
       } catch (err: any) {
         console.error("Error fetching sensor data:", err);

@@ -1,30 +1,9 @@
-// src/components/PredictLiveDashboard.tsx
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { MetricCard } from "@/components/ui/metric-card";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 import { RefreshCw, Play, Pause, MapPin, CloudRain, Thermometer, Wind, AlertTriangle } from "lucide-react";
-
-/**
- * Types returned by your FastAPI /predict_live route
- */
-type PredictLiveResponse = {
-  features: {
-    temp_c?: number;
-    humidity?: number;
-    pressure_mb?: number;
-    wind_kph?: number;
-    precip_mm?: number;
-    latitude?: number;
-    longitude?: number;
-    depth_km?: number;
-    magnitude?: number;
-    [k: string]: any;
-  };
-  predicted_risk_class?: number | string;
-  timestamp?: string; // ISO
-  error?: string;
-};
+import { useFetchPrediction } from "../hooks/useFetchPrediction";
 
 const RISK_MAP: Record<number | string, { label: string; status: string }> = {
   0: { label: "Safe", status: "safe" },
@@ -37,51 +16,26 @@ const RISK_MAP: Record<number | string, { label: string; status: string }> = {
 const endpoint = "http://127.0.0.1:8000/live/predict_live";
 
 export default function PredictLiveDashboard() {
-  const [data, setData] = useState<PredictLiveResponse | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [autoRefresh, setAutoRefresh] = useState(true);
-  const [intervalMs, setIntervalMs] = useState<number>(5000);
-
-  const fetchPrediction = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(endpoint);
-      const json: PredictLiveResponse = await res.json();
-      if (!res.ok || json.error) {
-        const msg = json?.error ?? `Server returned ${res.status}`;
-        setError(String(msg));
-        setData(null);
-      } else {
-        setData(json);
-      }
-    } catch (err: any) {
-      setError(err?.message ?? "Network error");
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // initial + interval
-  useEffect(() => {
-    fetchPrediction();
-    if (!autoRefresh) return;
-    const id = setInterval(fetchPrediction, intervalMs);
-    return () => clearInterval(id);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoRefresh, intervalMs]);
+  const {
+    data,
+    loading,
+    error,
+    fetchPrediction,
+    autoRefresh,
+    setAutoRefresh,
+    intervalMs,
+    setIntervalMs,
+  } = useFetchPrediction(endpoint, 5000);
 
   // derived values for easy display
   const predicted = data?.predicted_risk_class;
-  const riskInfo = predicted !== undefined && predicted !== null && RISK_MAP[predicted as any]
-    ? RISK_MAP[predicted as any]
-    : { label: String(predicted ?? "N/A"), status: "unknown" };
+  const riskInfo =
+    predicted !== undefined && predicted !== null && RISK_MAP[predicted as any]
+      ? RISK_MAP[predicted as any]
+      : { label: String(predicted ?? "N/A"), status: "unknown" };
 
   const featuresList = useMemo(() => {
     if (!data?.features) return [];
-    // only show the main ordered features (keeps UI stable)
     const order = [
       "temp_c",
       "humidity",
@@ -101,12 +55,14 @@ export default function PredictLiveDashboard() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold">Live Prediction</h2>
-          <p className="text-sm text-muted-foreground">Merged weather + quake features → model prediction</p>
+          <p className="text-sm text-muted-foreground">
+            Merged weather + quake features → model prediction
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => { fetchPrediction(); }}
+            onClick={fetchPrediction}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card text-card-foreground hover:shadow"
             title="Refresh now"
           >
@@ -115,7 +71,7 @@ export default function PredictLiveDashboard() {
           </button>
 
           <button
-            onClick={() => setAutoRefresh(a => !a)}
+            onClick={() => setAutoRefresh((a) => !a)}
             className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card text-card-foreground hover:shadow"
             title={autoRefresh ? "Pause auto-refresh" : "Start auto-refresh"}
           >
@@ -124,6 +80,8 @@ export default function PredictLiveDashboard() {
           </button>
         </div>
       </div>
+
+      {/* ... rest of your UI (unchanged) ... */}
 
       {/* Top metrics row */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -244,6 +202,7 @@ export default function PredictLiveDashboard() {
           </CardContent>
         </Card>
       </div>
+
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
