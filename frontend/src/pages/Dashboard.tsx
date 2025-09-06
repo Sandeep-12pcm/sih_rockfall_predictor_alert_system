@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   const riskAreas = useMemo(() => {
     // Group readings by sensor type or location
-    return readings.slice(0, 4).map((r, idx) => {
+    return readings.slice(0, 5).map((r, idx) => {
       const mapRisk = (risk?: number) => {
         switch (risk) {
           case 0: return "safe";

@@ -17,7 +17,7 @@ const SensorDashboard: React.FC = () => {
 
   // if (loading) return <p className="text-muted-foreground">Loading...</p>;
   if (error) return <p className="text-destructive">{error}</p>;
-
+  
   const getRiskColor = (risk?: number) => {
     switch (risk) {
       case 0:
