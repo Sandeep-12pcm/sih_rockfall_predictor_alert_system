@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,10 +19,10 @@ const DataTrends = () => {
   const [selectedMetric, setSelectedMetric] = useState("displacement");
 
   const timeRanges = [
-    { id: "1h", label: "1 Hour" },
-    { id: "24h", label: "24 Hours" },
-    { id: "7d", label: "7 Days" },
-    { id: "30d", label: "30 Days" },
+    { id: "1h", label: "1 Hour", points: 12 },
+    { id: "24h", label: "24 Hours", points: 24 },
+    { id: "7d", label: "7 Days", points: 168 },
+    { id: "30d", label: "30 Days", points: 720 },
   ];
 
   const sensorData = [
@@ -34,7 +34,11 @@ const DataTrends = () => {
       change: "+0.8",
       trend: "up",
       status: "warning",
-      icon: Activity
+      icon: Activity,
+      baseValue: 3.2,
+      variance: 0.5,
+      threshold: 5.0,
+      pattern: "increasing"
     },
     {
       id: "strain",
@@ -44,7 +48,11 @@ const DataTrends = () => {
       change: "+45",
       trend: "up", 
       status: "danger",
-      icon: Zap
+      icon: Zap,
+      baseValue: 420,
+      variance: 50,
+      threshold: 500,
+      pattern: "volatile"
     },
     {
       id: "temperature",
@@ -54,7 +62,11 @@ const DataTrends = () => {
       change: "-1.2",
       trend: "down",
       status: "safe", 
-      icon: Thermometer
+      icon: Thermometer,
+      baseValue: 15.8,
+      variance: 2.0,
+      threshold: 25.0,
+      pattern: "seasonal"
     },
     {
       id: "moisture",
@@ -64,19 +76,126 @@ const DataTrends = () => {
       change: "+8.3",
       trend: "up",
       status: "caution",
-      icon: Droplets
+      icon: Droplets,
+      baseValue: 34.5,
+      variance: 5.0,
+      threshold: 60.0,
+      pattern: "cyclical"
     }
   ];
 
-  const generateChartData = (hours: number) => {
-    return Array.from({ length: hours }, (_, i) => ({
-      time: `${(23 - i).toString().padStart(2, '0')}:00`,
-      value: Math.random() * 100 + 50 + Math.sin(i * 0.1) * 20,
-      threshold: 80
-    })).reverse();
+  const generateRealisticData = (sensor, timeRange) => {
+    const timeConfig = timeRanges.find(t => t.id === timeRange);
+    const points = Math.min(timeConfig.points, 50); // Limit for performance
+    const currentTime = new Date();
+    
+    return Array.from({ length: points }, (_, i) => {
+      const timeAgo = points - 1 - i;
+      let timeLabel;
+      let timestamp = new Date(currentTime);
+      
+      // Calculate time labels based on range
+      switch (timeRange) {
+        case "1h":
+          timestamp.setMinutes(timestamp.getMinutes() - timeAgo * 5);
+          timeLabel = timestamp.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: false 
+          });
+          break;
+        case "24h":
+          timestamp.setHours(timestamp.getHours() - timeAgo);
+          timeLabel = timestamp.toLocaleTimeString('en-US', { 
+            hour: '2-digit',
+            hour12: false 
+          });
+          break;
+        case "7d":
+          timestamp.setHours(timestamp.getHours() - timeAgo);
+          timeLabel = timestamp.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric' 
+          });
+          break;
+        case "30d":
+          timestamp.setHours(timestamp.getHours() - timeAgo);
+          timeLabel = timestamp.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric' 
+          });
+          break;
+        default:
+          timeLabel = i.toString();
+      }
+      
+      // Generate realistic values based on sensor pattern
+      let value = sensor.baseValue;
+      const progress = i / points;
+      
+      switch (sensor.pattern) {
+        case "increasing":
+          // Gradual increase with some noise
+          value = sensor.baseValue * (0.7 + 0.3 * progress) + 
+                  (Math.random() - 0.5) * sensor.variance;
+          break;
+        case "volatile":
+          // High volatility with spikes
+          value = sensor.baseValue + 
+                  Math.sin(i * 0.3) * sensor.variance * 0.8 +
+                  (Math.random() - 0.5) * sensor.variance * 1.5;
+          if (Math.random() < 0.1) value += sensor.variance * 2; // Random spikes
+          break;
+        case "seasonal":
+          // Sinusoidal pattern with daily/seasonal variation
+          value = sensor.baseValue + 
+                  Math.sin(i * 0.2) * sensor.variance +
+                  (Math.random() - 0.5) * sensor.variance * 0.3;
+          break;
+        case "cyclical":
+          // Regular cycles with some randomness
+          value = sensor.baseValue + 
+                  Math.sin(i * 0.4) * sensor.variance * 0.7 +
+                  Math.cos(i * 0.1) * sensor.variance * 0.3 +
+                  (Math.random() - 0.5) * sensor.variance * 0.5;
+          break;
+        default:
+          value = sensor.baseValue + (Math.random() - 0.5) * sensor.variance;
+      }
+      
+      // Ensure non-negative values for most sensors
+      if (sensor.id !== "temperature") {
+        value = Math.max(0, value);
+      }
+      
+      return {
+        time: timeLabel,
+        value: parseFloat(value.toFixed(2)),
+        threshold: sensor.threshold,
+        timestamp: timestamp.getTime()
+      };
+    });
   };
 
-  const chartData = generateChartData(24);
+  const selectedSensor = sensorData.find(s => s.id === selectedMetric);
+  const chartData = useMemo(() => 
+    generateRealisticData(selectedSensor, timeRange), 
+    [selectedMetric, timeRange, selectedSensor]
+  );
+
+  // Calculate chart dimensions and scaling
+  const chartWidth = 800;
+  const chartHeight = 300;
+  const padding = 40;
+  const plotWidth = chartWidth - 2 * padding;
+  const plotHeight = chartHeight - 2 * padding;
+  
+  const maxValue = Math.max(...chartData.map(d => Math.max(d.value, d.threshold))) * 1.1;
+  const minValue = Math.min(0, Math.min(...chartData.map(d => d.value)) * 0.9);
+  const valueRange = maxValue - minValue;
+  
+  const getY = (value) => chartHeight - padding - ((value - minValue) / valueRange) * plotHeight;
+  const getX = (index) => padding + (index / (chartData.length - 1)) * plotWidth;
 
   return (
     <div className="p-6 space-y-6">
@@ -178,40 +297,66 @@ const DataTrends = () => {
           <Card className="gradient-surface border-border">
             <CardHeader>
               <CardTitle className="text-foreground">
-                {sensorData.find(s => s.id === selectedMetric)?.name} Trend
+                {selectedSensor?.name} Trend
               </CardTitle>
               <CardDescription>
-                Real-time sensor readings over the last {timeRange}
+                Real-time sensor readings over the last {timeRange} 
+                (Current: {selectedSensor?.current} {selectedSensor?.unit}, 
+                Threshold: {selectedSensor?.threshold} {selectedSensor?.unit})
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="h-80 relative">
-                {/* Simulated Chart */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent rounded-lg p-4">
-                  <svg className="w-full h-full" viewBox="0 0 800 300">
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 to-transparent rounded-lg p-2">
+                  <svg className="w-full h-full" viewBox={`0 0 ${chartWidth} ${chartHeight}`}>
                     {/* Grid lines */}
                     {Array.from({ length: 6 }, (_, i) => (
                       <line
                         key={`hline-${i}`}
-                        x1="0"
-                        y1={i * 50 + 25}
-                        x2="800"
-                        y2={i * 50 + 25}
+                        x1={padding}
+                        y1={padding + (i * plotHeight / 5)}
+                        x2={chartWidth - padding}
+                        y2={padding + (i * plotHeight / 5)}
                         stroke="hsl(var(--border))"
                         strokeWidth="1"
                         opacity="0.3"
                       />
                     ))}
                     
+                    {/* Y-axis labels */}
+                    {Array.from({ length: 6 }, (_, i) => {
+                      const value = maxValue - (i * valueRange / 5);
+                      return (
+                        <text
+                          key={`ylabel-${i}`}
+                          x={padding - 10}
+                          y={padding + (i * plotHeight / 5) + 5}
+                          textAnchor="end"
+                          className="fill-current text-muted-foreground text-xs"
+                        >
+                          {value.toFixed(1)}
+                        </text>
+                      );
+                    })}
+                    
                     {/* Threshold line */}
                     <line
-                      x1="0"
-                      y1="150"
-                      x2="800"
-                      y2="150"
-                      stroke="hsl(var(--status-warning))"
+                      x1={padding}
+                      y1={getY(selectedSensor.threshold)}
+                      x2={chartWidth - padding}
+                      y2={getY(selectedSensor.threshold)}
+                      stroke="hsl(var(--destructive))"
                       strokeWidth="2"
                       strokeDasharray="5,5"
+                    />
+                    
+                    {/* Data area fill */}
+                    <path
+                      d={`M ${getX(0)} ${getY(chartData[0].value)} ${chartData.map((point, i) => 
+                        `L ${getX(i)} ${getY(point.value)}`
+                      ).join(' ')} L ${getX(chartData.length - 1)} ${chartHeight - padding} L ${getX(0)} ${chartHeight - padding} Z`}
+                      fill="hsl(var(--primary))"
+                      fillOpacity="0.1"
                     />
                     
                     {/* Data line */}
@@ -219,29 +364,69 @@ const DataTrends = () => {
                       fill="none"
                       stroke="hsl(var(--primary))"
                       strokeWidth="3"
-                      points={chartData.map((point, i) => `${i * 33.33},${250 - point.value * 2}`).join(' ')}
+                      points={chartData.map((point, i) => `${getX(i)},${getY(point.value)}`).join(' ')}
                     />
                     
                     {/* Data points */}
                     {chartData.map((point, i) => (
                       <circle
                         key={`point-${i}`}
-                        cx={i * 33.33}
-                        cy={250 - point.value * 2}
+                        cx={getX(i)}
+                        cy={getY(point.value)}
                         r="4"
                         fill="hsl(var(--primary))"
                         className="hover:r-6 transition-all"
-                      />
+                      >
+                        <title>{`${point.time}: ${point.value} ${selectedSensor.unit}`}</title>
+                      </circle>
+                    ))}
+                    
+                    {/* X-axis labels (sample a few points to avoid crowding) */}
+                    {chartData.filter((_, i) => i % Math.ceil(chartData.length / 6) === 0).map((point, i, arr) => (
+                      <text
+                        key={`xlabel-${i}`}
+                        x={getX(chartData.indexOf(point))}
+                        y={chartHeight - padding + 15}
+                        textAnchor="middle"
+                        className="fill-current text-muted-foreground text-xs"
+                      >
+                        {point.time}
+                      </text>
                     ))}
                   </svg>
                   
                   {/* Chart labels */}
-                  <div className="absolute bottom-2 left-4 text-xs text-muted-foreground">
+                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs text-muted-foreground">
                     Time ({timeRange})
                   </div>
-                  <div className="absolute top-4 right-4 text-xs text-status-warning">
-                    ⚠️ Threshold Line
+                  <div className="absolute top-4 right-4 text-xs text-destructive">
+                    ⚠️ Threshold: {selectedSensor.threshold} {selectedSensor.unit}
                   </div>
+                  <div className="absolute top-4 left-4 text-xs text-muted-foreground">
+                    {selectedSensor.unit}
+                  </div>
+                </div>
+              </div>
+              
+              {/* Chart Statistics */}
+              <div className="grid grid-cols-4 gap-4 mt-4 pt-4 border-t border-border">
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Current</div>
+                  <div className="font-medium">{chartData[chartData.length - 1]?.value} {selectedSensor.unit}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Average</div>
+                  <div className="font-medium">
+                    {(chartData.reduce((sum, d) => sum + d.value, 0) / chartData.length).toFixed(2)} {selectedSensor.unit}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Maximum</div>
+                  <div className="font-medium">{Math.max(...chartData.map(d => d.value)).toFixed(2)} {selectedSensor.unit}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Minimum</div>
+                  <div className="font-medium">{Math.min(...chartData.map(d => d.value)).toFixed(2)} {selectedSensor.unit}</div>
                 </div>
               </div>
             </CardContent>
