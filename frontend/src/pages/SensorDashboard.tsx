@@ -58,9 +58,9 @@ const SensorDashboard: React.FC = () => {
               <span className="font-bold">Predicted Risk:</span>{" "}
               <span
                 className={
-                    // sensor.predicted_risk_class === "high"
-                    // ? "text-red-600 font-bold"
-                    // : 
+                    sensor.predicted_risk_class === 0
+                    ? "text-red-600 font-bold"
+                    : 
                     "text-green-600 font-bold"
                 }
               >
