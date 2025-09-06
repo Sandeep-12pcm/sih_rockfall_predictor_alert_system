@@ -13,6 +13,8 @@ import {
   Monitor,
   Users,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const HomePage: React.FC = () => {
   const features = [
@@ -98,13 +100,38 @@ const HomePage: React.FC = () => {
     },
   ];
 
+  // Animation variants
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+    exit: { opacity: 0, y: -50, transition: { duration: 0.6 } },
+  };
+
+  const AnimatedSection: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { ref, inView } = useInView({
+      threshold: 0.2,
+      triggerOnce: false,
+    });
+
+    return (
+      <motion.div
+        ref={ref}
+        variants={fadeInUp}
+        initial="hidden"
+        animate={inView ? "visible" : "exit"}
+      >
+        {children}
+      </motion.div>
+    );
+  };
+
   return (
     <div className="bg-gray-900 text-white">
       {/* Hero Section */}
       <section
         className="relative h-screen flex flex-col items-center justify-center text-center px-6"
         style={{
-          backgroundImage: "url('/rock fall 1.jpg')", // ✅ rename image properly in public/
+          backgroundImage: "url('/rock fall 1.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -112,7 +139,7 @@ const HomePage: React.FC = () => {
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/30"></div>
 
-        {/* Logo - top left */}
+        {/* Logo */}
         <div className="absolute top-6 left-6 z-20 flex items-center space-x-3">
           <img
             src="/favicon.ico"
@@ -122,8 +149,13 @@ const HomePage: React.FC = () => {
           <span className="text-xl font-bold tracking-wide">TechTonic</span>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 mt-10">
+        {/* Hero Content */}
+        <motion.div
+          className="relative z-10 mt-10"
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 drop-shadow-lg">
             AI-Based Rockfall Prediction <br /> & Alert System
           </h1>
@@ -139,12 +171,9 @@ const HomePage: React.FC = () => {
               href="/dashboard"
               className="flex items-center overflow-hidden rounded-lg shadow-lg transition transform hover:scale-105"
             >
-              {/* Left white part with text */}
-              <span className="bg-gray-800 text-white-900 px-6 py-3 font-semibold">
+              <span className="bg-gray-800 px-6 py-3 font-semibold">
                 Get Started
               </span>
-
-              {/* Right orange part with arrow */}
               <span className="bg-white px-2 py-3.5 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -153,12 +182,7 @@ const HomePage: React.FC = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                 </svg>
               </span>
             </a>
@@ -169,39 +193,45 @@ const HomePage: React.FC = () => {
               Learn More
             </a>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}
       <section id="features" className="relative py-20 bg-gray-950 px-6">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-          How Our AI Predicts Rockfalls
-        </h2>
-        <p className="text-gray-400 max-w-3xl mx-auto mb-12 text-center">
-          Our system uses advanced AI algorithms to analyze real-time data from
-          various sources, predicting rockfall events with high accuracy.
-        </p>
+        <AnimatedSection>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+            How Our AI Predicts Rockfalls
+          </h2>
+          <p className="text-gray-400 max-w-3xl mx-auto mb-12 text-center">
+            Our system uses advanced AI algorithms to analyze real-time data from
+            various sources, predicting rockfall events with high accuracy.
+          </p>
+        </AnimatedSection>
 
-        {/* --- First Part: 4 Circle Steps --- */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto mb-16">
-          {[
-            "Data Collection",
-            "AI Analysis",
-            "Prediction & Alert",
-            "System Integration",
-          ].map((step, idx) => (
-            <div key={idx} className="flex flex-col items-center">
-              <div className="bg-blue-500 text-black font-bold text-xl w-12 h-12 flex items-center justify-center rounded-full mb-4">
-                {idx + 1}
-              </div>
-              <h3 className="font-semibold text-lg">{step}</h3>
-            </div>
-          ))}
-        </div>
+        {/* Steps */}
+        <AnimatedSection>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto mb-16">
+            {["Data Collection", "AI Analysis", "Prediction & Alert", "System Integration"].map(
+              (step, idx) => (
+                <motion.div
+                  key={idx}
+                  className="flex flex-col items-center"
+                  variants={fadeInUp}
+                >
+                  <div className="bg-blue-500 text-black font-bold text-xl w-12 h-12 flex items-center justify-center rounded-full mb-4">
+                    {idx + 1}
+                  </div>
+                  <h3 className="font-semibold text-lg">{step}</h3>
+                </motion.div>
+              )
+            )}
+          </div>
+        </AnimatedSection>
 
+        {/* Feature Cards */}
         <div className="max-w-6xl mx-auto space-y-16">
           {features.map((section, idx) => (
-            <div key={idx}>
+            <AnimatedSection key={idx}>
               <h3 className="text-2xl font-semibold text-white-400 mb-8">
                 {section.category}
               </h3>
@@ -209,9 +239,10 @@ const HomePage: React.FC = () => {
                 {section.items.map((item, i) => {
                   const Icon = item.icon;
                   return (
-                    <div
+                    <motion.div
                       key={i}
                       className="bg-gray-800/60 p-6 rounded-2xl shadow-lg transition transform hover:scale-105 hover:bg-gray-700/80 hover:shadow-blue-500/30 duration-300"
+                      variants={fadeInUp}
                     >
                       <div className="flex items-center justify-center w-14 h-14 rounded-full bg-blue-500/20 mb-4 mx-auto">
                         <Icon className="w-8 h-8 text-blue-400" />
@@ -220,13 +251,31 @@ const HomePage: React.FC = () => {
                         {item.title}
                       </h4>
                       <p className="text-gray-400 text-center">{item.desc}</p>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
-            </div>
+            </AnimatedSection>
           ))}
         </div>
+
+        {/* Buttons */}
+        <AnimatedSection>
+          <div className="mt-20 flex flex-col md:flex-row gap-6 justify-center">
+            <button
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
+              onClick={() => alert("Show Sensor Data Flow Diagram")}
+            >
+              Show Sensor Data Flow Diagram
+            </button>
+            <button
+              className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-lg shadow-lg transition transform hover:scale-105"
+              onClick={() => alert("Show External Data Diagram")}
+            >
+              Show External Data Diagram
+            </button>
+          </div>
+        </AnimatedSection>
       </section>
     </div>
   );

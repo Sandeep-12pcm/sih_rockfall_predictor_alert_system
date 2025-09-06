@@ -15,6 +15,8 @@ import Signup from "./pages/Signup";
 import SensorDashboard from "./pages/SensorDashboard";
 import HomePage from "./pages/HomePage";
 import PredictLiveDashboard from "./pages/PredictLiveDashboard";
+import DataFlowDiagram from "./components/DataFlowDiagram";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,37 +26,53 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/signup" element = {<Signup/>} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
           <Route path="/predict-live" element={<PredictLiveDashboard />} />
+          <Route path="/data-flow" element={<DataFlowDiagram />} />
+          <Route
+            path="/dashboard"
+            element={
+              <AppLayout>
+                <Dashboard />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/risk-maps"
+            element={
+              <AppLayout>
+                <RiskMaps />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <AppLayout>
+                <Alerts />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/trends"
+            element={
+              <AppLayout>
+                <DataTrends />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <AppLayout>
+                <Settings />
+              </AppLayout>
+            }
+          />
 
-          <Route path="/dashboard" element={
-            <AppLayout>
-              <Dashboard />
-            </AppLayout>
-          } />
-          <Route path="/risk-maps" element={
-            <AppLayout>
-              <RiskMaps />
-            </AppLayout>
-          } />
-          <Route path="/alerts" element={
-            <AppLayout>
-              <Alerts />
-            </AppLayout>
-          } />
-          <Route path="/trends" element={
-            <AppLayout>
-              <DataTrends />
-            </AppLayout>
-          } />
-          <Route path="/settings" element={
-            <AppLayout>
-              <Settings />
-            </AppLayout>
-          } />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

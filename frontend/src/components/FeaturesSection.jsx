@@ -102,42 +102,47 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="bg-gray-900 text-white py-20 px-6">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
-          How Our AI Predicts Rockfalls
-        </h2>
-        <p className="text-lg text-gray-400 text-center mb-16 max-w-3xl mx-auto">
-          Our system uses advanced AI algorithms to analyze real-time data,
-          predict rockfall events with high accuracy, and provide actionable insights.
-        </p>
+    <>
+      <section className="bg-gray-900 text-white py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+            How Our AI Predicts Rockfalls
+          </h2>
+          <p className="text-lg text-gray-400 text-center mb-16 max-w-3xl mx-auto">
+            Our system uses advanced AI algorithms to analyze real-time data,
+            predict rockfall events with high accuracy, and provide actionable
+            insights.
+          </p>
 
-        {/* Sections */}
-        <div className="space-y-16">
-          {sections.map((section) => (
-            <div key={section.id}>
-              <h3 className="text-2xl font-bold mb-8">{section.title}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {section.features.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-800/60 p-6 rounded-2xl shadow-lg hover:bg-gray-700/80 transition"
-                  >
-                    <div className="flex items-center gap-3 mb-4 text-yellow-400">
-                      {feature.icon}
-                      <h4 className="font-semibold text-lg text-white">
-                        {feature.title}
-                      </h4>
+          {/* Sections */}
+          <div className="space-y-16">
+            {sections.map((section) => (
+              <div key={section.id}>
+                <h3 className="text-2xl font-bold mb-8">{section.title}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {section.features.map((feature, index) => (
+                    <div
+                      key={index}
+                      className="bg-gray-800/60 p-6 rounded-2xl shadow-lg hover:bg-gray-700/80 transition"
+                    >
+                      <div className="flex items-center gap-3 mb-4 text-yellow-400">
+                        {feature.icon}
+                        <h4 className="font-semibold text-lg text-white">
+                          {feature.title}
+                        </h4>
+                      </div>
+                      <p className="text-gray-400">{feature.desc}</p>
                     </div>
-                    <p className="text-gray-400">{feature.desc}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      {/* --- Data Flow Section --- */}
+   
+    </>
   );
 };
 

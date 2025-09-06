@@ -1,12 +1,12 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { 
-  Shield, 
-  MapPin, 
-  AlertTriangle, 
-  TrendingUp, 
-  Settings, 
+import {
+  Shield,
+  Map,
+  AlertTriangle,
+  TrendingUp,
+  Settings,
   Home,
-  Activity
+  LogOut,
 } from "lucide-react";
 
 import {
@@ -22,9 +22,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navigationItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Risk Maps", url: "/risk-maps", icon: MapPin },
+const items = [
+  { title: "Dashboard", url: "/Dashboard", icon: Home },
+  { title: "Risk Maps", url: "/risk-maps", icon: Map },
   { title: "Alerts", url: "/alerts", icon: AlertTriangle },
   { title: "Data Trends", url: "/trends", icon: TrendingUp },
   { title: "Settings", url: "/settings", icon: Settings },
@@ -34,18 +34,17 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  const isCollapsed = state === "collapsed";
 
   const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive 
-      ? "bg-primary text-primary-foreground font-medium shadow-sm" 
+    isActive
+      ? "bg-primary text-primary-foreground font-medium shadow-sm"
       : "hover:bg-accent text-muted-foreground hover:text-foreground";
-
-  const isCollapsed = state === "collapsed";
 
   return (
     <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
-      <SidebarHeader className="border-b border-border p-4">
+      <SidebarHeader className="bg-slate-800 !text-white border-b border-border p-4 ">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg gradient-primary">
             <Shield className="h-5 w-5 text-white" />
@@ -53,32 +52,38 @@ export function AppSidebar() {
           {!isCollapsed && (
             <div>
               <h2 className="font-semibold text-sm">RockSafe AI</h2>
-              <p className="text-xs text-muted-foreground">Mining Safety System</p>
+              <p className="text-xs text-muted-foreground">
+                Mining Safety System
+              </p>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-slate-800 !text-white">
+        {/* Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-medium px-3 mb-2">
-            {!isCollapsed && "MONITORING"}
+          <SidebarGroupLabel className="text-slate-400 font-medium">
+            Navigation
           </SidebarGroupLabel>
-          
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigationItems.map((item) => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end={item.url === "/"} 
-                      className={getNavCls}
+                    <NavLink
+                      to={item.url}
+                      end={item.url === "/"}
+                      className={({ isActive }) =>
+                        `transition-all duration-200 flex items-center gap-2 px-3 py-2 rounded-md ${
+                          isActive
+                            ? "bg-slate-700 text-white font-medium"
+                            : "hover:bg-slate-700 text-slate-300 hover:text-white"
+                        }`
+                      }
                     >
-                      <item.icon className="h-4 w-4 flex-shrink-0" />
-                      {!isCollapsed && (
-                        <span className="font-medium text-sm">{item.title}</span>
-                      )}
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -86,18 +91,32 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {/* ✅ Logout button */}
+        <div className="mt-auto">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <button
+                  onClick={() => console.log("Logout clicked")}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-blue-500 text-blue-100 hover:text-white transition-all duration-200"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span>Logout</span>
+                </button>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
 
-        {!isCollapsed && (
-          <div className="mt-auto p-4 border-t border-border">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Activity className="h-3 w-3 text-status-safe" />
-              <span>System Online</span>
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Last sync: 2 min ago
+          {/* Footer */}
+          <div className="mt-auto p-4 border-t border-slate-700">
+            <div className="flex items-center space-x-2">
+              <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-sm text-slate-400 group-data-[collapsible=icon]:hidden">
+                System Online
+              </span>
             </div>
           </div>
-        )}
+        </div>
       </SidebarContent>
     </Sidebar>
   );
