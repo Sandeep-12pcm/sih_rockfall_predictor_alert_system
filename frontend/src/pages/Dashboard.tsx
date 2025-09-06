@@ -11,20 +11,57 @@ import {
   Users,
   MapPin
 } from "lucide-react";
+import { useSensorReadings } from "../hooks/useSensorReadings"; 
+import { useMemo } from "react";
 
 const Dashboard = () => {
-  const riskAreas = [
-    { name: "North Slope A", risk: "safe", probability: "2.1%" },
-    { name: "East Wall B", risk: "caution", probability: "15.3%" },
-    { name: "South Bench C", risk: "warning", probability: "34.7%" },
-    { name: "West Quarry D", risk: "danger", probability: "67.2%" },
-  ];
+  const { readings, loading, error } = useSensorReadings();
 
-  const recentAlerts = [
-    { time: "14:32", zone: "East Wall B", severity: "Medium", message: "Increased displacement detected" },
-    { time: "13:45", zone: "South Bench C", severity: "High", message: "Strain gauge threshold exceeded" },
-    { time: "12:18", zone: "North Slope A", severity: "Low", message: "Minor vibration anomaly" },
-  ];
+  if (error) return <p className="text-destructive">{error}</p>;
+
+  // --- Derived Data from readings ---
+  const activeSensors = readings.length;
+  const totalSensors = 52; // adjust if known
+
+  const avgTemperature = useMemo(() => {
+    const temps = readings.filter(r => r.type === "temperature");
+    if (!temps.length) return null;
+    return (temps.reduce((sum, r) => sum + r.value, 0) / temps.length).toFixed(1);
+  }, [readings]);
+
+  const rainfall24h = useMemo(() => {
+    const rain = readings.find(r => r.type === "rainfall");
+    return rain ? rain.value.toFixed(1) : null;
+  }, [readings]);
+
+  const riskAreas = useMemo(() => {
+    // Group readings by sensor type or location
+    return readings.slice(0, 4).map((r, idx) => {
+      const mapRisk = (risk?: number) => {
+        switch (risk) {
+          case 0: return "safe";
+          case 1: return "danger";
+          case 2: return "critical";
+          default: return "unknown";
+        }
+      };
+      return {
+        name: r.type || `Zone ${idx + 1}`,
+        risk: mapRisk(r.predicted_risk_class),
+        probability: `${(Math.random() * 100).toFixed(1)}%` // Replace with real prob if model provides
+      };
+    });
+  }, [readings]);
+
+  const recentAlerts = useMemo(() => {
+    return readings.slice(-3).map(r => ({
+      time: new Date(r.timestamp).toLocaleTimeString(),
+      zone: r.type,
+      severity: r.predicted_risk_class === 0 ? "High" :
+                r.predicted_risk_class === 1 ? "Medium" : "Low",
+      message: `Sensor ${r.id} detected value ${r.value} ${r.unit}`
+    }));
+  }, [readings]);
 
   return (
     <div className="p-6 space-y-6">
@@ -36,7 +73,7 @@ const Dashboard = () => {
         </div>
         <div className="flex items-center gap-2">
           <StatusIndicator status="safe" label="System Operational" />
-          <div className="text-sm text-muted-foreground">Last updated: 2 min ago</div>
+          <div className="text-sm text-muted-foreground">Last updated: {new Date().toLocaleTimeString()}</div>
         </div>
       </div>
 
@@ -44,34 +81,34 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Active Sensors"
-          value="47"
-          unit="/52"
+          value={activeSensors.toString()}
+          unit={`/${totalSensors}`}
           change="+2 since yesterday"
           changeType="positive"
           icon={Activity}
         />
         <MetricCard
           title="Risk Zones"
-          value="4"
+          value={riskAreas.length.toString()}
           unit="areas"
-          change="1 elevated today"
-          changeType="negative"
+          change="Auto-updated"
+          changeType="neutral"
           icon={AlertTriangle}
         />
         <MetricCard
           title="Temperature"
-          value="23.4"
+          value={avgTemperature ?? "N/A"}
           unit="°C"
-          change="Normal range"
+          change="Live reading"
           changeType="neutral"
           icon={Thermometer}
         />
         <MetricCard
           title="Rainfall (24h)"
-          value="12.3"
+          value={rainfall24h ?? "N/A"}
           unit="mm"
-          change="Above average"
-          changeType="negative"
+          change="Live reading"
+          changeType="neutral"
           icon={Droplets}
         />
       </div>

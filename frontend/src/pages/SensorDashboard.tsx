@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSensorReadings } from "../hooks/useSensorReadings"; // adjust path
 
 interface SensorReading {
   id: string;
@@ -10,26 +11,12 @@ interface SensorReading {
 }
 
 const SensorDashboard: React.FC = () => {
-  const [readings, setReadings] = useState<SensorReading[]>([]);
 
-  // Fetch data every 2 seconds
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch("http://127.0.0.1:8000/sensors/readings");
-        console.log("Fetching sensor data...");
-        const data = await res.json();
-        console.log("Fetched sensor data:", data[0]);
-        setReadings(data);
-      } catch (err) {
-        console.error("Error fetching sensor data:", err);
-      }
-    };
 
-    fetchData(); // initial load
-    const interval = setInterval(fetchData, 2000); // repeat every 2s
-    return () => clearInterval(interval);
-  }, []);
+   const { readings, loading, error } = useSensorReadings();
+
+  // if (loading) return <p className="text-muted-foreground">Loading...</p>;
+  if (error) return <p className="text-destructive">{error}</p>;
 
   const getRiskColor = (risk?: number) => {
     switch (risk) {
