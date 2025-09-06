@@ -42,6 +42,8 @@ const Dashboard = () => {
           case 0: return "safe";
           case 1: return "danger";
           case 2: return "critical";
+          case 3: return "warning";
+          case 4: return "caution";
           default: return "unknown";
         }
       };
@@ -54,7 +56,7 @@ const Dashboard = () => {
   }, [readings]);
 
   const recentAlerts = useMemo(() => {
-    return readings.slice(-3).map(r => ({
+    return readings.slice(-5).map(r => ({
       time: new Date(r.timestamp).toLocaleTimeString(),
       zone: r.type,
       severity: r.predicted_risk_class === 0 ? "High" :
