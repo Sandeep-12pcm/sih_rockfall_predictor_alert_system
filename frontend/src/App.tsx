@@ -13,6 +13,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
 import SensorDashboard from "./pages/SensorDashboard";
+import HomePage from "./pages/HomePage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
         <Routes>
           <Route path="/signup" element = {<Signup/>} />
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
           <Route path="/dashboard" element={
             <AppLayout>
