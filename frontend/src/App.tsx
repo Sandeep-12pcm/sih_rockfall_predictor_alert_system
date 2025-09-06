@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "./components/layout/AppLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import RiskMaps from "./pages/RiskMaps";
+
 import Alerts from "./pages/Alerts";
 import DataTrends from "./pages/DataTrends";
 import Settings from "./pages/Settings";
@@ -16,7 +16,7 @@ import SensorDashboard from "./pages/SensorDashboard";
 import HomePage from "./pages/HomePage";
 import PredictLiveDashboard from "./pages/PredictLiveDashboard";
 import DataFlowDiagram from "./components/DataFlowDiagram";
-
+import QnAPage from "./pages/QnaPage";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -30,6 +30,11 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
+          <Route path="/qna" element={
+            <AppLayout>
+              <QnAPage />
+            </AppLayout>
+          } />
 
           <Route path="/predict-live" element={
             <AppLayout>
@@ -45,14 +50,7 @@ const App = () => (
               </AppLayout>
             }
           />
-          <Route
-            path="/risk-maps"
-            element={
-              <AppLayout>
-                <RiskMaps />
-              </AppLayout>
-            }
-          />
+
           <Route
             path="/alerts"
             element={
