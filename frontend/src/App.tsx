@@ -13,7 +13,7 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import Signup from "./pages/Signup";
 import SensorDashboard from "./pages/SensorDashboard";
-
+import PredictLiveDashboard from "./pages/PredictLiveDashboard";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,6 +26,8 @@ const App = () => (
           <Route path="/signup" element = {<Signup/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
+          <Route path="/predict-live-dashboard" element={<PredictLiveDashboard />} />
+
           <Route path="/dashboard" element={
             <AppLayout>
               <Dashboard />
