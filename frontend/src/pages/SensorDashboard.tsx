@@ -31,44 +31,63 @@ const SensorDashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const getRiskColor = (risk?: number) => {
+    switch (risk) {
+      case 0:
+        return "text-status-critical font-bold"; // highest risk
+      case 1:
+        return "text-status-danger font-bold";
+      case 2:
+        return "text-status-warning font-bold";
+      case 3:
+        return "text-status-caution font-bold";
+      case 4:
+        return "text-status-safe font-bold"; // safe
+      default:
+        return "text-muted-foreground";
+    }
+  };
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-blue-600 mb-4">
+    <div className="p-6 bg-background min-h-screen text-foreground">
+      <h1 className="text-2xl font-bold text-primary mb-6">
         Rockfall Sensor Dashboard
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {readings.map((sensor) => (
           <div
             key={`${sensor.id}-${sensor.timestamp}`}
-            className="bg-white shadow-lg rounded-2xl p-4 border"
+            className="bg-card text-card-foreground shadow-lg rounded-2xl p-6 border border-border hover:shadow-xl transition"
           >
-            <h2 className="text-lg font-semibold">{sensor.type}</h2>
-            <p>
-              <span className="font-bold">ID:</span> {sensor.id}
-            </p>
-            <p>
-              <span className="font-bold">Value:</span> {sensor.value}{" "}
-              {sensor.unit}
-            </p>
-            <p>
-              <span className="font-bold">Timestamp:</span>{" "}
-              {new Date(sensor.timestamp).toLocaleTimeString()}
-            </p>
-            <p className="mt-2">
-              <span className="font-bold">Predicted Risk:</span>{" "}
-              <span
-                className={
-                    sensor.predicted_risk_class === 0
-                    ? "text-red-600 font-bold"
-                    : 
-                    "text-green-600 font-bold"
-                }
-              >
-                {sensor.predicted_risk_class !== undefined && sensor.predicted_risk_class !== null
-  ? sensor.predicted_risk_class
-  : "N/A"}
-              </span>
-            </p>
+            <h2 className="text-lg font-semibold text-primary">
+              {sensor.type}
+            </h2>
+            <div className="mt-3 space-y-1">
+              <p>
+                <span className="font-bold text-muted-foreground">ID:</span>{" "}
+                {sensor.id}
+              </p>
+              <p>
+                <span className="font-bold text-muted-foreground">Value:</span>{" "}
+                {sensor.value} {sensor.unit}
+              </p>
+              <p>
+                <span className="font-bold text-muted-foreground">Timestamp:</span>{" "}
+                {new Date(sensor.timestamp).toLocaleTimeString()}
+              </p>
+              <p className="mt-3">
+                <span className="font-bold text-muted-foreground">
+                  Predicted Risk:
+                </span>{" "}
+                <span className={getRiskColor(sensor.predicted_risk_class)}>
+                  {sensor.predicted_risk_class !== undefined &&
+                  sensor.predicted_risk_class !== null
+                    ? sensor.predicted_risk_class
+                    : "N/A"}
+                </span>
+              </p>
+            </div>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import health, sensors, test  # ✅ only import sensors once
+from app.routes import predict_live
 
 app = FastAPI(title="Rockfall ML API", version="0.1.0")
 # ✅ Allow frontend access
@@ -15,7 +16,7 @@ app.add_middleware(
 app.include_router(health.router, tags=["health"])
 # app.include_router(sensors.router, tags=["sensors"])  # ✅ sensors.py already has /sensors, /ingest, /readings
 app.include_router(sensors.router, prefix="/sensors", tags=["sensors"])
-
+app.include_router(predict_live.router, prefix="/live", tags=["live"])
 app.include_router(test.router, tags=["test"])
 
 # For local dev: `python -m app.main`

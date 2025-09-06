@@ -1,3 +1,4 @@
+import pandas as pd  # ✅ needed for DataFrame
 from fastapi import APIRouter
 from app.schemas.sensor import Sensor, SensorReading
 from datetime import datetime
@@ -25,8 +26,14 @@ MODEL_PATH = os.path.join(
 )
 rf_model = joblib.load(MODEL_PATH)
 
-# Sensor order for model input
-MODEL_FEATURE_ORDER = ["D-01", "S-01", "P-01", "T-01", "V-01"]
+# Mapping: sensor_id → model feature name
+FEATURE_MAP = {
+    "D-01": "displacement",
+    "S-01": "strain",
+    "P-01": "pore_pressure",
+    "T-01": "tilt",
+    "V-01": "vibration",
+}
 
 
 @router.get("/sensors", response_model=list[Sensor])
@@ -41,14 +48,17 @@ def ingest_reading(reading: SensorReading):
     for s in reversed(READINGS):  # iterate from latest stored
         if s["id"] not in latest_values:
             latest_values[s["id"]] = s["value"]
-        if len(latest_values) == len(MODEL_FEATURE_ORDER):
+        if len(latest_values) == len(FEATURE_MAP):
             break  # got all required sensors
 
     # Add the current one
     latest_values[reading.id] = reading.value
 
-    # Ensure all sensors are present (fill missing with 0)
-    X_input = [[latest_values.get(sid, 0) for sid in MODEL_FEATURE_ORDER]]
+    # ✅ Map sensor IDs -> model feature names
+    model_input = {FEATURE_MAP[sid]: latest_values.get(sid, 0) for sid in FEATURE_MAP}
+
+    # ✅ Build DataFrame with proper feature names
+    X_input = pd.DataFrame([model_input])
 
     # Predict risk
     predicted_risk = int(rf_model.predict(X_input)[0])
