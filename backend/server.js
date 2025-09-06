@@ -1,19 +1,18 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
+const smsRoutes = require("./routes/smsRoute");
 
 const app = express();
-const PORT = 8000;
 
-// Middleware
+// Enable CORS for all origins (or restrict if needed)
 app.use(cors());
+
+// Parse JSON bodies
 app.use(express.json());
 
-// Test route
-app.get('/', (req, res) => {
-  res.send('Rockfall Prediction Backend is running on port ' + PORT);
-});
+// Mount routes
+app.use("/api", smsRoutes);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server is running at http://localhost:${PORT}`);
+app.listen(5000, () => {
+  console.log("🚀 Alert backend running on http://localhost:5000");
 });

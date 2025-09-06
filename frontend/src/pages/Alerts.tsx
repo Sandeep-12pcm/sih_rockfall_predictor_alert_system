@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 import { useSensorReadings } from "../hooks/useSensorReadings";
 import { useFetchPrediction } from "../hooks/useFetchPrediction";
+import { sendSMSAlert } from "@/actions/smsAlerts";
+import SMSButton from "../components/SMSButton";
 
 import {
   Dialog,
@@ -113,6 +115,22 @@ const Alerts = () => {
       )
     );
   };
+
+async function handlePredictionResult(result: any) {
+  // if (result.prediction >= 2) {
+    const message = `⚠️ High Rockfall Risk Detected! 
+    Location ID: ${result} 
+    Risk Level: "high"`;
+    // Risk Level: ${result};
+
+    // Email
+    // await sendEmailAlert("team@mine.com", "Rockfall Alert", message);
+    console.log("SMS function called", message);
+    // SMS
+    // await sendSMSAlert("+917303042793", message);
+  // }
+}
+
 
   const handleViewDetails = (alert: any) => {
     setSelectedAlert(alert);
@@ -384,13 +402,15 @@ const Alerts = () => {
                     </Button>
                     {(alert.status === "active" ||
                       alert.status === "acknowledged") && (
-                      <Button
-                        size="sm"
-                        className="gradient-primary text-white"
-                        onClick={() => handleTakeAction(alert.id)}
-                      >
-                        Take Action
-                      </Button>
+                      // <Button
+                      //   size="sm"
+                      //   className="gradient-primary text-white"
+                      //   // onClick={() => handleTakeAction(alert.id)}
+                      //   // onClick={() => handlePredictionResult(alert.id)}
+                      // >
+                      //   Take Action
+                      // </Button>
+                      <SMSButton label="🚨 Trigger SMS Alert" />
                     )}
                   </div>
                 </div>

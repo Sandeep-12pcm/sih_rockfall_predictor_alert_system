@@ -18,6 +18,8 @@ import PredictLiveDashboard from "./pages/PredictLiveDashboard";
 import DataFlowDiagram from "./components/DataFlowDiagram";
 import QnAPage from "./pages/QnaPage";
 import ImageryPrediction from "./pages/imageryPrediction";
+import TestSMS from "./components/TestSMS";  
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -27,6 +29,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/test-sms" element={<TestSMS />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/imagery-prediction" element={
