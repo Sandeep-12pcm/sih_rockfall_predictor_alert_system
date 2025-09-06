@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { StatusIndicator } from "@/components/ui/status-indicator";
 import { useSensorReadings } from "../hooks/useSensorReadings";
 import { useFetchPrediction } from "../hooks/useFetchPrediction";
-import { sendSMSAlert } from "@/actions/smsAlerts";
 import SMSButton from "../components/SMSButton";
 
 import {
