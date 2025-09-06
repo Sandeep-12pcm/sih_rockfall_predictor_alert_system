@@ -11,6 +11,9 @@ import {
   Zap,
   Calendar,
   Download,
+  Gauge,
+  Move3D,
+  Vibrate,
   RefreshCw
 } from "lucide-react";
 
@@ -26,63 +29,105 @@ const DataTrends = () => {
   ];
 
   const sensorData = [
-    {
-      id: "displacement",
-      name: "Slope Displacement", 
-      unit: "mm",
-      current: "3.2",
-      change: "+0.8",
-      trend: "up",
-      status: "warning",
-      icon: Activity,
-      baseValue: 3.2,
-      variance: 0.5,
-      threshold: 5.0,
-      pattern: "increasing"
-    },
-    {
-      id: "strain",
-      name: "Strain Measurements",
-      unit: "µε", 
-      current: "420",
-      change: "+45",
-      trend: "up", 
-      status: "danger",
-      icon: Zap,
-      baseValue: 420,
-      variance: 50,
-      threshold: 500,
-      pattern: "volatile"
-    },
-    {
-      id: "temperature",
-      name: "Ground Temperature",
-      unit: "°C",
-      current: "15.8",
-      change: "-1.2",
-      trend: "down",
-      status: "safe", 
-      icon: Thermometer,
-      baseValue: 15.8,
-      variance: 2.0,
-      threshold: 25.0,
-      pattern: "seasonal"
-    },
-    {
-      id: "moisture",
-      name: "Soil Moisture",
-      unit: "%",
-      current: "34.5", 
-      change: "+8.3",
-      trend: "up",
-      status: "caution",
-      icon: Droplets,
-      baseValue: 34.5,
-      variance: 5.0,
-      threshold: 60.0,
-      pattern: "cyclical"
-    }
-  ];
+  {
+    id: "displacement",
+    name: "Slope Displacement", 
+    unit: "mm",
+    current: "3.2",
+    change: "+0.8",
+    trend: "up",
+    status: "warning",
+    icon: Activity,
+    baseValue: 3.2,
+    variance: 0.5,
+    threshold: 5.0,
+    pattern: "increasing"
+  },
+  {
+    id: "strain",
+    name: "Strain Measurements",
+    unit: "µε", 
+    current: "420",
+    change: "+45",
+    trend: "up", 
+    status: "danger",
+    icon: Zap,
+    baseValue: 420,
+    variance: 50,
+    threshold: 500,
+    pattern: "volatile"
+  },
+  {
+    id: "temperature",
+    name: "Ground Temperature",
+    unit: "°C",
+    current: "15.8",
+    change: "-1.2",
+    trend: "down",
+    status: "safe", 
+    icon: Thermometer,
+    baseValue: 15.8,
+    variance: 2.0,
+    threshold: 25.0,
+    pattern: "seasonal"
+  },
+  {
+    id: "moisture",
+    name: "Soil Moisture",
+    unit: "%",
+    current: "34.5", 
+    change: "+8.3",
+    trend: "up",
+    status: "caution",
+    icon: Droplets,
+    baseValue: 34.5,
+    variance: 5.0,
+    threshold: 60.0,
+    pattern: "cyclical"
+  },
+  {
+    id: "pore_pressure",
+    name: "Pore Water Pressure",
+    unit: "kPa",
+    current: "127.4",
+    change: "+15.2",
+    trend: "up",
+    status: "warning",
+    icon: Gauge,
+    baseValue: 127.4,
+    variance: 12.0,
+    threshold: 180.0,
+    pattern: "precipitation_dependent"
+  },
+  {
+    id: "tilt",
+    name: "Surface Tilt",
+    unit: "mrad",
+    current: "2.8",
+    change: "+0.4",
+    trend: "up",
+    status: "caution",
+    icon: Move3D,
+    baseValue: 2.8,
+    variance: 0.3,
+    threshold: 5.0,
+    pattern: "gradual_increase"
+  },
+  {
+    id: "vibration",
+    name: "Ground Vibration",
+    unit: "mm/s",
+    current: "1.2",
+    change: "-0.3",
+    trend: "down",
+    status: "safe",
+    icon: Vibrate,
+    baseValue: 1.2,
+    variance: 0.8,
+    threshold: 10.0,
+    pattern: "seismic_activity"
+  }
+];
 
   const generateRealisticData = (sensor, timeRange) => {
     const timeConfig = timeRanges.find(t => t.id === timeRange);
