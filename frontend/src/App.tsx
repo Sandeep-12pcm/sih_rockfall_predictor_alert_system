@@ -17,6 +17,7 @@ import HomePage from "./pages/HomePage";
 import PredictLiveDashboard from "./pages/PredictLiveDashboard";
 import DataFlowDiagram from "./components/DataFlowDiagram";
 import QnAPage from "./pages/QnaPage";
+import ImageryPrediction from "./pages/imageryPrediction";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -28,6 +29,11 @@ const App = () => (
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/imagery-prediction" element={
+            <AppLayout>
+              <ImageryPrediction />
+            </AppLayout>
+          } />
           <Route path="/" element={<HomePage />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
           <Route path="/qna" element={
