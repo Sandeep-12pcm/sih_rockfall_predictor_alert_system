@@ -23,10 +23,10 @@ import { useNavigate } from "react-router-dom";
 
 const Settings = () => {
   const [profile, setProfile] = useState({
-    name: "John Smith",
-    email: "john.smith@minesite.com",
-    role: "Safety Engineer", 
-    phone: "+1-555-0123"
+    name: "",
+    email: "",
+    role: "", 
+    phone: ""
   });
   const navigate = useNavigate();
   const { toast } = useToast();

@@ -3,12 +3,53 @@ import { AppSidebar } from "./AppSidebar";
 import { Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+// import { supabase } from "../../supabaseClient";
+import {supabase} from "@/supabaseClient";
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+
+   
+      const [profile, setProfile] = useState({
+        name: "",
+        email: "",
+        role: "", 
+        phone: ""
+      });
+      const navigate = useNavigate();
+      const { toast } = useToast();
+    
+      useEffect(() => {
+        const fetchProfile  = async() => {
+          const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError || !sessionData.session) {
+            console.error("No active session found:", sessionError);
+            return navigate("/login", { replace: true });
+          }
+    
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("id, name, email, number, role")
+            .eq("id", sessionData.session.user.id)
+            .single();
+    
+          if (userError) return navigate("/login", { replace: true });
+    
+          setProfile(userData);
+        };
+    
+        fetchProfile();
+      }, [navigate]);
+    
+
+
+
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
@@ -37,8 +78,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <User className="h-4 w-4 text-primary" />
                 </div>
                 <div className="hidden md:block text-sm">
-                  <div className="font-medium text-foreground">John Smith</div>
-                  <div className="text-xs text-muted-foreground">Safety Engineer</div>
+                  <div className="font-medium text-foreground">{profile.name}</div>
+                  <div className="text-xs text-muted-foreground">{profile.role}</div>
                 </div>
               </div>
             </div>
