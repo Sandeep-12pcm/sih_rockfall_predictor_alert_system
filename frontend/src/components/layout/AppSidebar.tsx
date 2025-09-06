@@ -21,6 +21,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { title } from "process";
 
 const items = [
   { title: "Dashboard", url: "/Dashboard", icon: Home },
@@ -28,6 +29,7 @@ const items = [
   { title: "Alerts", url: "/alerts", icon: AlertTriangle },
   { title: "Data Trends", url: "/trends", icon: TrendingUp },
   { title: "Settings", url: "/settings", icon: Settings },
+  
 ];
 
 export function AppSidebar() {
