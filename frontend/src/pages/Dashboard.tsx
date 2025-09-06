@@ -21,7 +21,7 @@ const Dashboard = () => {
 
   // --- Derived Data from readings ---
   const activeSensors = readings.length;
-  const totalSensors = 52; // adjust if known
+  const totalSensors = 10000; // adjust if known
 
   const avgTemperature = useMemo(() => {
     const temps = readings.filter(r => r.type === "temperature");
