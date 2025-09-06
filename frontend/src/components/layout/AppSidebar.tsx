@@ -25,6 +25,7 @@ import { title } from "process";
 
 const items = [
   { title: "Dashboard", url: "/Dashboard", icon: Home },
+  { title: "Predict Live", url: "/predict-live", icon: TrendingUp },
   { title: "Risk Maps", url: "/risk-maps", icon: Map },
   { title: "Alerts", url: "/alerts", icon: AlertTriangle },
   { title: "Data Trends", url: "/trends", icon: TrendingUp },

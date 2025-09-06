@@ -30,7 +30,12 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/sensor-dashboard" element={<SensorDashboard />} />
-          <Route path="/predict-live" element={<PredictLiveDashboard />} />
+
+          <Route path="/predict-live" element={
+            <AppLayout>
+              <PredictLiveDashboard />
+            </AppLayout>
+          } />
           <Route path="/data-flow" element={<DataFlowDiagram />} />
           <Route
             path="/dashboard"
