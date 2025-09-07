@@ -1,4 +1,6 @@
-import { NavLink, useLocation } from "react-router-dom";
+
+
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Shield,
   Map,
@@ -21,7 +23,8 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { title } from "process";
+import { supabase } from "@/supabaseClient";
+import { useToast } from "@/hooks/use-toast";
 
 const items = [
   { title: "Dashboard", url: "/Dashboard", icon: Home },
@@ -31,12 +34,13 @@ const items = [
   { title: "Data Trends", url: "/trends", icon: TrendingUp },
   { title: "QnA", url: "/qna", icon: Map },
   { title: "Settings", url: "/settings", icon: Settings },
-  
 ];
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const currentPath = location.pathname;
   const isCollapsed = state === "collapsed";
 
@@ -45,6 +49,15 @@ export function AppSidebar() {
     isActive
       ? "bg-primary text-primary-foreground font-medium shadow-sm"
       : "hover:bg-accent text-muted-foreground hover:text-foreground";
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Logged Out",
+      description: "You have been signed out successfully.",
+    });
+    navigate("/login", { replace: true });
+  };
 
   return (
     <Sidebar className={isCollapsed ? "w-16" : "w-64"} collapsible="icon">
@@ -101,7 +114,7 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <button
-                  onClick={() => console.log("Logout clicked")}
+                  onClick={handleLogout}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-md hover:bg-blue-500 text-blue-100 hover:text-white transition-all duration-200"
                 >
                   <LogOut className="h-5 w-5" />
