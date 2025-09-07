@@ -17,6 +17,7 @@ export default function SMSButton({
       });
       const data = await res.json();
       console.log("Response:", data);
+      alert("SMS sent successfully!");
     } catch (err) {
       console.error("Fetch error:", err);
     }
