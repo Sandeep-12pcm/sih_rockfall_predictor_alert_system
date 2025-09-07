@@ -20,6 +20,7 @@ export default function SMSButton({
       alert("SMS sent successfully!");
     } catch (err) {
       console.error("Fetch error:", err);
+      alert("Failed to send SMS.");
     }
   }
 
