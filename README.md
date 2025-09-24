@@ -71,3 +71,45 @@ cd backend
 npm i
 
 nodemon server
+
+# 📌 Usage
+
+- Deploy sensors in the field to collect real-time geological data.
+
+- The backend processes sensor data and runs prediction models.
+
+- Dashboard displays slope stability status, rockfall probability, and historical records.
+
+- Alerts are triggered if risk crosses threshold levels.
+
+# 🎯 Applications
+
+- Machines and Lives protection in pit holes mining areas
+
+- Highway & railway projects in hilly regions
+
+- Tunneling and mining safety
+
+- Disaster management and early warning systems
+
+- Infrastructure protection in landslide-prone areas
+
+# 🛠️ Future Improvements
+
+- Integration with satellite imagery & remote sensing data
+
+- Integration with Senors
+
+- Use real data for model trainings
+
+- Advanced deep learning models for higher accuracy
+
+- Mobile app for local authorities and travelers
+
+- Predictive maintenance for sensors
+
+# 👥 Team
+
+Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
+
+(Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishwa Parmar)
