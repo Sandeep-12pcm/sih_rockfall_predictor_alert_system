@@ -64,7 +64,7 @@ npm i
 
 npm run dev
 
-## BACKEND (optional)
+## BACKEND (for notifications, sms & mail alerts)
 
 cd backend
 
@@ -113,4 +113,5 @@ nodemon server
 Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
 
 (Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishva Parmar)
+
 
