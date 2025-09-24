@@ -112,4 +112,5 @@ nodemon server
 
 Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
 
-(Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishwa Parmar)
+(Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishva Parmar)
+
