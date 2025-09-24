@@ -14,6 +14,8 @@ A smart solution developed under Smart India Hackathon (SIH) for predicting and 
 
 - Scalable Architecture – Cloud-ready system that supports large-scale deployments.
 
+- Customizable Account Settings
+
 # 🏗️ System Architecture
 
 - Sensors Layer – Hardware sensors for data collection.
@@ -36,17 +38,36 @@ ML Models: Python (scikit-learn, TensorFlow, PyTorch)
 
 # ⚡ Installation & Setup
 
-#Clone repository
-git clone https://github.com/Sandeep-12pcm/sih_rockfall_predictor_alert_system.git
+## Clone repository
+git clone [https://github.com/Sandeep-12pcm/sih_rockfall_predictor_alert_system.git](https://github.com/Sandeep-12pcm/sih_rockfall_predictor_alert_system.git)
+
 cd sih_rockfall_predictor_alert_system
 
-#Start ML Model
-cd 
-pip install -r requirements.txt
+## ML MODEL
 
-# Run backend
-npm start
+### Setup
 
-# Run frontend (if separate)
-cd client
-npm start
+cd ml_model
+
+python -m venv model # create virtual environment for python libraries (recommended python v3.13)
+
+pip install -r requirements.txt # install python required libraries
+
+### Run Model
+
+
+## FRONTEND
+
+cd frontend
+
+npm i
+
+npm run dev
+
+## BACKEND (optional)
+
+cd backend
+
+npm i
+
+nodemon server
