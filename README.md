@@ -63,6 +63,8 @@ uvicorn app.main:app --reload #run the model to start predictions
 
 ## FRONTEND
 
+#(set .env file for supabase)
+
 cd frontend
 
 npm i
@@ -70,6 +72,8 @@ npm i
 npm run dev
 
 ## BACKEND (for notifications, sms & mail alerts)
+
+#(create .env file for twilio)
 
 cd backend
 
@@ -118,6 +122,7 @@ nodemon server
 Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
 
 (Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishva Parmar)
+
 
 
 
