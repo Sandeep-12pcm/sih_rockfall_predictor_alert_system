@@ -49,12 +49,17 @@ cd sih_rockfall_predictor_alert_system
 
 cd ml_model
 
-python -m venv model # create virtual environment for python libraries (recommended python v3.13)
+python -m venv model #create virtual environment for python libraries (recommended python v3.13)
 
-pip install -r requirements.txt # install python required libraries
+model/Scripts/activate #activate the environment 
+
+pip install -r requirements.txt #install python required libraries
 
 ### Run Model
 
+python python .\simulate.py #start synthetic signal simulator 
+
+uvicorn app.main:app --reload #run the model to start predictions
 
 ## FRONTEND
 
@@ -113,5 +118,6 @@ nodemon server
 Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
 
 (Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishva Parmar)
+
 
 
