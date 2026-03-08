@@ -119,7 +119,7 @@ nodemon server
 
 # 👥 Team
 
-Developed by "TECTONICS" as part of Smart India Hackathon (SIH).
+Developed by "TECTONICS" as part of Smart India Hackathon (SIH)-2025.
 
 (Sandeep, Krish Dhamecha, Abhishek Makwana, Manthan Parmar, Vishva Parmar)
 
